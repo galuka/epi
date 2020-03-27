@@ -23,7 +23,7 @@
             <%
             return;
         }
-        var typeString = string.Format($"{contentTypeName}, {assemblyName}");
+        var typeString = string.Format("{0}, {1}", contentTypeName, assemblyName);
         var contentType = contentTypeRepository.Load(Type.GetType(typeString));
         var contentUsages = contentModelUsage.ListContentOfContentType(contentType);
         var contentReferences = contentUsages.Select(x => x.ContentLink.ToReferenceWithoutVersion()).Distinct().ToList();
