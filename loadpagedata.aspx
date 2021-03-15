@@ -2,22 +2,43 @@
 <%@ Import Namespace="EPiServer" %>
 <%@ Import Namespace="EPiServer.Core" %>
 <%@ Import Namespace="EPiServer.ServiceLocation" %>
+<%@ Import Namespace="System.Linq" %>
 
 <%
+    var contentId = Request.QueryString["id"];
+	if (string.IsNullOrWhiteSpace(contentId))
+    {
+		%>
+		<div>
+			Please specify the content id using query parameter "id" like this: loadpagedata.aspx?id=148
+		</div>
+		<%
+		return;
+    }
 	IContentLoader contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
-	PageData pageData = contentLoader.Get<PageData>(new ContentReference(131893));
+	PageData pageData = contentLoader.Get<PageData>(new ContentReference(int.Parse(contentId)));
 	string name = pageData.Name;
 	DateTime changed = pageData.Changed;
 	DateTime saved = pageData.Saved;
 	DateTime? published = pageData.StartPublish;
 %>
-
 <html>
-	<h1>Test page</h1>
-	<div>
-		<h3> Page name: </h3><span><%=name%></span>
-		<h3> Changed: </h3><span><%=changed%></span>
-		<h3> Saved: </h3><span><%=saved%></span>
-		<h3> Published: </h3><span><%=published%></span>
-	</div>
+	<style>
+		h3{
+		display: inline;
+		}
+	</style>
+	<body>
+		<h1>Properties of '<%=pageData.Name%>' page</h1>
+		<div>
+		<%
+			foreach (var property in pageData.Property.OrderBy(x => x.Name))
+			{%>
+				<div>
+					<h3><%=property.Name%></h3>&nbsp;<span><%=property.Value%></span>
+				</div>
+			<%}
+		%>
+		</div>
+	</body>
 </html>
