@@ -6,6 +6,7 @@
 
 <%
     var contentId = Request.QueryString["id"];
+    var providerName = Request.QueryString["providerName"];
 	if (string.IsNullOrWhiteSpace(contentId))
     {
 		%>
@@ -16,11 +17,7 @@
 		return;
     }
 	IContentLoader contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
-	PageData pageData = contentLoader.Get<PageData>(new ContentReference(int.Parse(contentId)));
-	string name = pageData.Name;
-	DateTime changed = pageData.Changed;
-	DateTime saved = pageData.Saved;
-	DateTime? published = pageData.StartPublish;
+	var content = contentLoader.Get<IContent>(new ContentReference(int.Parse(contentId), string.IsNullOrEmpty(providerName) ? null : providerName));
 %>
 <html>
 	<style>
@@ -29,10 +26,10 @@
 		}
 	</style>
 	<body>
-		<h1>Properties of '<%=pageData.Name%>' page</h1>
+		<h1>Properties of '<%=content.Name%>' page</h1>
 		<div>
 		<%
-			foreach (var property in pageData.Property.OrderBy(x => x.Name))
+			foreach (var property in content.Property.OrderBy(x => x.Name))
 			{%>
 				<div>
 					<h3><%=property.Name%></h3>&nbsp;<span><%=property.Value%></span>
